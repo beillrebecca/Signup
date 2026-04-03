@@ -13,18 +13,26 @@
 
     <div class="signup-logo">Recomen</div>
 
-    <!-- メールまたは電話番号 -->
-    <input type="text" id="contact" placeholder="メールアドレスまたは電話番号">
+    <!-- メール -->
+<input type="text" id="contactEmail" placeholder="メールアドレス">
 
-    <!-- ユーザーネーム -->
-    <input type="text" id="newUsername" placeholder="ユーザーネーム">
+<!-- 電話番号 -->
+<input type="text" id="contactPhone" placeholder="電話番号（例: +819012345678）">
 
-    <!-- パスワード -->
-    <input type="password" id="newPassword" placeholder="パスワード">
+<!-- 確認コード -->
+<input type="text" id="phoneCode" placeholder="電話番号確認コード">
 
-    <button id="signupBtn">登録</button>
+<!-- ユーザーネーム -->
+<input type="text" id="newUsername" placeholder="ユーザーネーム">
 
-  </div>
+<!-- パスワード -->
+<input type="password" id="newPassword" placeholder="パスワード">
+
+<button id="signupBtn">登録</button>
+<button id="sendPhoneCodeBtn">確認コード送信</button>
+
+<!-- reCAPTCHA コンテナ -->
+<div id="recaptcha-container"></div>
 </div>
 
 <!-- Firebase App (必須) -->
