@@ -1,29 +1,44 @@
 // =========================
-// 🔹 新規登録処理（Signup）
+// 🔹 新規登録処理（Signup + Firebaseメール認証）
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
   const signupBtn = document.getElementById("signupBtn");
 
   signupBtn?.addEventListener("click", () => {
-    const contact = document.getElementById("contact").value.trim();
+    const email = document.getElementById("contact").value.trim();
     const username = document.getElementById("newUsername").value.trim();
     const password = document.getElementById("newPassword").value.trim();
 
     // 入力チェック
-    if(!contact || !username || !password){
+    if(!email || !username || !password){
       alert("全ての項目を入力してください");
       return;
     }
 
-    // 保存（簡易版：ローカルストレージ）
-    const userData = {
-      contact: contact,
-      username: username,
-      password: password
-    };
-    localStorage.setItem("userData", JSON.stringify(userData));
+    // Firebase 初期化済みを前提
+    const auth = firebase.auth();
 
-    alert("登録完了！ログインしてください");
-    location.href = "../Login/"; // ログインページに飛ばす
+    // メールアドレスとパスワードでアカウント作成
+    auth.createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // ユーザー作成成功
+        const user = userCredential.user;
+
+        // ユーザー名をプロファイルに設定
+        return user.updateProfile({ displayName: username })
+          .then(() => user);
+      })
+      .then((user) => {
+        // メール確認を送信
+        return user.sendEmailVerification();
+      })
+      .then(() => {
+        alert("登録完了！確認メールを送信しました。メールを確認してからログインしてください。");
+        location.href = "../Login/"; // ログインページへ
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("エラー：" + error.message);
+      });
   });
 });
