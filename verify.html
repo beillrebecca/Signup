@@ -20,7 +20,7 @@
     </p>
 
     <!-- コード入力 -->
-    <input type="text" id="code" placeholder="確認コード">
+    <input type="text" id="code" placeholder="確認コード（電話番号の場合のみ）">
 
     <!-- 認証ボタン -->
     <button id="verifyBtn">認証</button>
@@ -37,18 +37,7 @@
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCo1YZczL9GYsYkW4L2XBEM-SBWRvEUUUo",
-    authDomain: "recomen-91703.firebaseapp.com",
-    projectId: "recomen-91703",
-    storageBucket: "recomen-91703.appspot.com",
-    messagingSenderId: "361705732453",
-    appId: "1:361705732453:web:54b7c1113e687baa5a098c"
-  };
-  firebase.initializeApp(firebaseConfig);
-</script>
-
-<script src="script.js"></script>
+<!-- verify.js -->
+<script src="verify.js"></script>
 </body>
 </html>
