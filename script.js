@@ -1,3 +1,6 @@
+console.log("signup.js 読み込み成功");
+alert("signup.js 読み込み成功");
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("signup.js 読み込み成功");
   alert("signup.js 読み込み成功"); // JS が読み込まれたか確認
