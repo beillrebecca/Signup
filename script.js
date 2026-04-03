@@ -29,17 +29,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // メールアドレス登録
     if (contact.includes("@")) {
       auth.createUserWithEmailAndPassword(contact, password)
-        .then(userCredential => {
-          userCredential.user.sendEmailVerification()
-            .then(() => {
-              alert("登録完了！確認メールを送信しました。");
-              window.location.href = "../verify/";
-            });
-        })
-        .catch(error => {
-          console.error(error);
-          alert("メール登録エラー: " + error.message);
-        });
+  .then(userCredential => {
+    const user = userCredential.user;
+
+    return user.sendEmailVerification();
+  })
+  .then(() => {
+    alert("登録完了！確認メールを送信しました。");
+    window.location.href = "/Verify/index.html";
+  })
+  .catch(error => {
+    console.error("エラー内容:", error);
+    alert("エラー: " + error.message);
+  });
       return;
     }
 
@@ -49,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(confirmationResult => {
         window.confirmationResult = confirmationResult;
         alert("SMSで確認コードを送信しました。verifyページで入力してください。");
-        window.location.href = "../verify/";
+        window.location.href = "/Verify/index.html";
       })
       .catch(error => {
         console.error(error);
