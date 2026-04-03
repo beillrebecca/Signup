@@ -1,3 +1,4 @@
+alert("JS読み込まれてる");
 document.addEventListener("DOMContentLoaded", () => {
   const signupBtn = document.getElementById("signupBtn");
 
