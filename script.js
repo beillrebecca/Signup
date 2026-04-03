@@ -1,15 +1,23 @@
-alert("JS読み込まれてる");
 document.addEventListener("DOMContentLoaded", () => {
   const signupBtn = document.getElementById("signupBtn");
+  const contactInput = document.getElementById("contact");
+  const passwordInput = document.getElementById("password");
+  const passwordConfirmInput = document.getElementById("passwordConfirm");
+
+  const auth = firebase.auth();
+
+  // reCAPTCHA 初期化（電話番号用）
+  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+    size: 'invisible'
+  });
 
   signupBtn?.addEventListener("click", () => {
-    const contact = document.getElementById("contact").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const passwordConfirm = document.getElementById("passwordConfirm").value.trim();
+    const contact = contactInput.value.trim();
+    const password = passwordInput.value.trim();
+    const passwordConfirm = passwordConfirmInput.value.trim();
 
-    // 入力チェック
     if (!contact || !password || !passwordConfirm) {
-      alert("全て入力してください");
+      alert("全ての項目を入力してください");
       return;
     }
 
@@ -18,18 +26,34 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Firebase登録
-    firebase.auth().createUserWithEmailAndPassword(contact, password)
-      .then((userCredential) => {
-        userCredential.user.sendEmailVerification()
-          .then(() => {
-            alert("確認メールを送信しました！");
-            location.href = "../Verify/";
-          });
+    // メールアドレス登録
+    if (contact.includes("@")) {
+      auth.createUserWithEmailAndPassword(contact, password)
+        .then(userCredential => {
+          userCredential.user.sendEmailVerification()
+            .then(() => {
+              alert("登録完了！確認メールを送信しました。");
+              window.location.href = "../verify/";
+            });
+        })
+        .catch(error => {
+          console.error(error);
+          alert("メール登録エラー: " + error.message);
+        });
+      return;
+    }
+
+    // 電話番号登録
+    const appVerifier = window.recaptchaVerifier;
+    auth.signInWithPhoneNumber(contact, appVerifier)
+      .then(confirmationResult => {
+        window.confirmationResult = confirmationResult;
+        alert("SMSで確認コードを送信しました。verifyページで入力してください。");
+        window.location.href = "../verify/";
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
-        alert(error.message);
+        alert("電話番号登録エラー: " + error.message);
       });
   });
 });
