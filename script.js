@@ -48,11 +48,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // 電話番号登録
     const appVerifier = window.recaptchaVerifier;
     auth.signInWithPhoneNumber(contact, appVerifier)
-      .then(confirmationResult => {
-        window.confirmationResult = confirmationResult;
-        alert("SMSで確認コードを送信しました。verifyページで入力してください。");
-        window.location.href = "/Verify/index.html";
-      })
+  .then(confirmationResult => {
+    window.confirmationResult = confirmationResult;
+
+    // 🔥 追加
+    sessionStorage.setItem("phoneNumber", contact);
+    sessionStorage.setItem("verificationType", "phone");
+
+    alert("SMSで確認コードを送信しました。verifyページで入力してください。");
+    window.location.href = "/Verify/index.html";
+  })
       .catch(error => {
         console.error(error);
         alert("電話番号登録エラー: " + error.message);
