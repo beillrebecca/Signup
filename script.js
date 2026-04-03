@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } catch (error) {
     alert(error.message);
   }
+  return;
 }
 
     // 電話番号登録
