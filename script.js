@@ -1,44 +1,68 @@
-// =========================
-// 🔹 新規登録処理（Signup + Firebaseメール認証）
-// =========================
 document.addEventListener("DOMContentLoaded", () => {
   const signupBtn = document.getElementById("signupBtn");
+  const sendPhoneCodeBtn = document.getElementById("sendPhoneCodeBtn");
 
+  let confirmationResult = null; // SMSコード確認用
+
+  // 🔹 電話番号に確認コード送信
+  sendPhoneCodeBtn?.addEventListener("click", () => {
+    const phoneNumber = document.getElementById("contactPhone").value.trim();
+    if (!phoneNumber) {
+      alert("電話番号を入力してください");
+      return;
+    }
+
+    // reCAPTCHA
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      'size': 'invisible'
+    });
+
+    firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+      .then((result) => {
+        confirmationResult = result;
+        alert("確認コードをSMSで送信しました");
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("SMS送信エラー：" + error.message);
+      });
+  });
+
+  // 🔹 登録ボタン
   signupBtn?.addEventListener("click", () => {
-    const email = document.getElementById("contact").value.trim();
+    const email = document.getElementById("contactEmail").value.trim();
+    const phoneCode = document.getElementById("phoneCode").value.trim();
     const username = document.getElementById("newUsername").value.trim();
     const password = document.getElementById("newPassword").value.trim();
 
-    // 入力チェック
-    if(!email || !username || !password){
+    if (!email || !username || !password || !phoneCode) {
       alert("全ての項目を入力してください");
       return;
     }
 
-    // Firebase 初期化済みを前提
-    const auth = firebase.auth();
-
-    // メールアドレスとパスワードでアカウント作成
-    auth.createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // ユーザー作成成功
-        const user = userCredential.user;
-
-        // ユーザー名をプロファイルに設定
-        return user.updateProfile({ displayName: username })
-          .then(() => user);
-      })
-      .then((user) => {
-        // メール確認を送信
-        return user.sendEmailVerification();
-      })
-      .then(() => {
-        alert("登録完了！確認メールを送信しました。メールを確認してからログインしてください。");
-        location.href = "../Login/"; // ログインページへ
+    // SMS確認コード検証
+    confirmationResult.confirm(phoneCode)
+      .then((phoneUser) => {
+        // 電話番号認証成功
+        // 🔹 メールアドレスでの登録
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            const user = userCredential.user;
+            user.updateProfile({ displayName: username });
+            user.sendEmailVerification()
+              .then(() => {
+                alert("登録完了！メールと電話番号の確認が完了しました。");
+                location.href = "../Login/";
+              });
+          })
+          .catch((error) => {
+            console.error(error);
+            alert("メール登録エラー：" + error.message);
+          });
       })
       .catch((error) => {
         console.error(error);
-        alert("エラー：" + error.message);
+        alert("電話番号確認コードが間違っています：" + error.message);
       });
   });
 });
