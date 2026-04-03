@@ -42,27 +42,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // メールアドレス登録
     if (contact.includes("@")) {
-      try {
-        const userCredential = await auth.createUserWithEmailAndPassword(contact, password);
-        const user = userCredential.user;
+  try {
+    const userCredential = await auth.createUserWithEmailAndPassword(contact, password);
+    const user = userCredential.user;
 
-        sessionStorage.setItem("signupUid", user.uid);
-        sessionStorage.setItem("verificationType", "email");
+    sessionStorage.setItem("verificationType", "email");
 
-        console.log("メール登録成功:", user.uid);
-        alert(`メール登録完了！UID: ${user.uid}`);
+    await user.sendEmailVerification();
 
-        // 本来はここでサーバーへ確認コード送信
-        // fetch('/send-verification-email', { ... })
+    alert("確認メールを送信しました！");
+    window.location.href = "/Verify/index.html";
 
-        window.location.href = "/Verify/index.html";
-
-      } catch (error) {
-        console.error("メール登録エラー:", error);
-        alert("メール登録エラー: " + error.message);
-      }
-      return;
-    }
+  } catch (error) {
+    alert(error.message);
+  }
+}
 
     // 電話番号登録
     try {
