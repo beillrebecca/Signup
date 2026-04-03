@@ -1,26 +1,22 @@
 /* =========================
    Signup ページ
 ========================= */
-body {
-  background: #fafafa;
+
+html, body {
+  height: 100%;
   margin: 0;
-  font-family: 'Galada', cursive;
+  font-family: sans-serif;
+  background: #fafafa;
 }
 
-/* コンテナを画面中央に */
 .signup-container {
-  position: fixed;       /* 画面サイズに関係なく位置を固定 */
-  top: 50%;             /* 縦中央 */
-  left: 50%;            /* 横中央 */
-  transform: translate(-50%, -50%); /* 自分の幅・高さ分を引く */
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center;  /* 横中央 */
+  align-items: center;      /* 縦中央 */
+  height: 100%;             /* body 高さに合わせる */
   width: 100%;
-  height: 100vh;
 }
 
-/* 白いボックス */
 .signup-box {
   width: 320px;
   padding: 40px 30px;
@@ -28,35 +24,30 @@ body {
   border: 1px solid #ddd;
   text-align: center;
   border-radius: 8px;
-  box-sizing: border-box; /* これで内側のpadding込みで幅を計算 */
 }
 
-/* ロゴ */
 .signup-logo {
+  font-family: 'Galada', cursive;
   font-size: 42px;
   margin-bottom: 30px;
 }
 
-/* 入力欄・ボタンを同じ幅に */
-.signup-box input,
-#signupBtn {
+.signup-box input {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
-  border-radius: 6px;
-  box-sizing: border-box; /* これでボタンと横幅揃う */
-}
-
-/* 入力欄のボーダー色 */
-.signup-box input {
   border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box; /* 余白込みで幅を正確にする */
 }
 
-/* 登録ボタン */
 #signupBtn {
+  width: 100%;
+  padding: 10px;
   background: #0095f6;
   color: #fff;
   border: none;
+  border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
 }
