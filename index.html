@@ -6,31 +6,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Galada&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 <div class="signup-container">
   <div class="signup-box">
 
+    <!-- ロゴ -->
     <div class="signup-logo">Recomen</div>
 
-     <!-- 入力 -->
+    <!-- メールアドレスまたは電話番号 -->
     <input type="text" id="contact" placeholder="メールアドレスまたは電話番号">
+
+    <!-- パスワード -->
     <input type="password" id="password" placeholder="パスワード">
     <input type="password" id="passwordConfirm" placeholder="パスワード（確認）">
 
-    <!-- ボタン -->
+    <!-- 登録ボタン -->
     <button id="signupBtn">登録</button>
+
+    <!-- reCAPTCHA（電話番号認証用） -->
+    <div id="recaptcha-container"></div>
 
   </div>
 </div>
 
-<!-- Firebase App (必須) -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
-<!-- Firebase Authentication -->
 <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
 
 <script>
-  // Your web app's Firebase configuration
+  // Firebase 設定
   const firebaseConfig = {
     apiKey: "AIzaSyCo1YZczL9GYsYkW4L2XBEM-SBWRvEUUUo",
     authDomain: "recomen-91703.firebaseapp.com",
@@ -39,7 +43,6 @@
     messagingSenderId: "361705732453",
     appId: "1:361705732453:web:54b7c1113e687baa5a098c"
   };
-  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
 </script>
 
