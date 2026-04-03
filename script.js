@@ -1,8 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("signup.js 読み込み成功");
+  alert("signup.js 読み込み成功"); // JS が読み込まれたか確認
+
   const signupBtn = document.getElementById("signupBtn");
   const contactInput = document.getElementById("contact");
   const passwordInput = document.getElementById("password");
   const passwordConfirmInput = document.getElementById("passwordConfirm");
+
+  if (!signupBtn) {
+    alert("signupBtn が見つかりません");
+    return;
+  }
 
   const auth = firebase.auth();
 
@@ -11,8 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
     size: 'invisible'
   });
 
-  signupBtn?.addEventListener("click", async () => {
-    alert("クリックイベント発火！"); // デバッグ用
+  signupBtn.addEventListener("click", async () => {
+    console.log("ボタンがクリックされました");
+    alert("クリックイベント発火！"); // クリック確認用
 
     const contact = contactInput.value.trim();
     const password = passwordInput.value.trim();
@@ -34,11 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const userCredential = await auth.createUserWithEmailAndPassword(contact, password);
         const user = userCredential.user;
 
-        // Signup UIDを sessionStorage に保存
         sessionStorage.setItem("signupUid", user.uid);
         sessionStorage.setItem("verificationType", "email");
 
-        // 🔥 デバッグ用 alert
+        console.log("メール登録成功:", user.uid);
         alert(`メール登録完了！UID: ${user.uid}`);
 
         // 本来はここでサーバーへ確認コード送信
@@ -47,8 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/Verify/index.html";
 
       } catch (error) {
-        console.error("エラー内容:", error);
-        alert("エラー: " + error.message);
+        console.error("メール登録エラー:", error);
+        alert("メール登録エラー: " + error.message);
       }
       return;
     }
@@ -62,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sessionStorage.setItem("phoneNumber", contact);
       sessionStorage.setItem("verificationType", "phone");
 
+      console.log("SMS送信成功");
       alert("SMSで確認コードを送信しました。verifyページで入力してください。");
       window.location.href = "/Verify/index.html";
 
