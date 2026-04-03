@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("loginUser", user);
         localStorage.setItem("loginPass", pass);
         alert("登録完了！ログインしてください");
-        location.href = "login.html";
+        location.href = "../Login/";
       } else {
         alert("全て入力してください");
       }
