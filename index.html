@@ -26,6 +26,12 @@
     <!-- reCAPTCHA（電話番号認証用） -->
     <div id="recaptcha-container"></div>
 
+    <!-- 補足メッセージ -->
+    <p class="signup-note">
+      メールアドレスで登録すると、確認コードをメールで送信します。<br>
+      電話番号で登録すると、SMSで確認コードを送信します。
+    </p>
+
   </div>
 </div>
 
@@ -46,6 +52,7 @@
   firebase.initializeApp(firebaseConfig);
 </script>
 
-<script src="script.js"></script>
+<!-- Signup JS（統一フロー対応版） -->
+<script src="signup.js"></script>
 </body>
 </html>
