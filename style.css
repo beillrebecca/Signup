@@ -4,9 +4,10 @@
 body {
   background: #fafafa;
   margin: 0;
-  font-family: sans-serif;
+  font-family: 'Galada', cursive;
 }
 
+/* コンテナを画面中央に */
 .signup-container {
   display: flex;
   justify-content: center;
@@ -14,6 +15,7 @@ body {
   height: 100vh;
 }
 
+/* 白いボックス */
 .signup-box {
   width: 320px;
   padding: 40px 30px;
@@ -21,29 +23,35 @@ body {
   border: 1px solid #ddd;
   text-align: center;
   border-radius: 8px;
+  box-sizing: border-box; /* これで内側のpadding込みで幅を計算 */
 }
 
+/* ロゴ */
 .signup-logo {
-  font-family: 'Galada', cursive;
   font-size: 42px;
   margin-bottom: 30px;
 }
 
-.signup-box input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
+/* 入力欄・ボタンを同じ幅に */
+.signup-box input,
 #signupBtn {
   width: 100%;
   padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  box-sizing: border-box; /* これでボタンと横幅揃う */
+}
+
+/* 入力欄のボーダー色 */
+.signup-box input {
+  border: 1px solid #ccc;
+}
+
+/* 登録ボタン */
+#signupBtn {
   background: #0095f6;
   color: #fff;
   border: none;
-  border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
 }
