@@ -28,22 +28,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // メールアドレス登録
     if (contact.includes("@")) {
-      auth.createUserWithEmailAndPassword(contact, password)
-  .then(userCredential => {
-    const user = userCredential.user;
+  auth.createUserWithEmailAndPassword(contact, password)
+    .then(userCredential => {
+      const user = userCredential.user;
 
-    return user.sendEmailVerification();
-  })
-  .then(() => {
-    alert("登録完了！確認メールを送信しました。");
-    window.location.href = "/Verify/index.html";
-  })
-  .catch(error => {
-    console.error("エラー内容:", error);
-    alert("エラー: " + error.message);
-  });
-      return;
-    }
+      // 🔥 これ追加
+      sessionStorage.setItem("verificationType", "email");
+
+      return user.sendEmailVerification();
+    })
+    .then(() => {
+      alert("登録完了！確認メールを送信しました。");
+      window.location.href = "/Verify/index.html";
+    })
+    .catch(error => {
+      console.error("エラー内容:", error);
+      alert("エラー: " + error.message);
+    });
+  return;
+}
 
     // 電話番号登録
     const appVerifier = window.recaptchaVerifier;
