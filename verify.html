@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Recomen - 認証</title>
+  <link href="https://fonts.googleapis.com/css2?family=Galada&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="verify-container">
+  <div class="verify-box">
+
+    <!-- ロゴ -->
+    <div class="verify-logo">Recomen</div>
+
+    <!-- 説明 -->
+    <p class="verify-text">
+      確認コードを入力してください
+    </p>
+
+    <!-- コード入力 -->
+    <input type="text" id="code" placeholder="確認コード">
+
+    <!-- 認証ボタン -->
+    <button id="verifyBtn">認証</button>
+
+    <!-- 再送信 -->
+    <p id="resendCode" class="resend">
+      コードを再送信
+    </p>
+
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCo1YZczL9GYsYkW4L2XBEM-SBWRvEUUUo",
+    authDomain: "recomen-91703.firebaseapp.com",
+    projectId: "recomen-91703",
+    storageBucket: "recomen-91703.appspot.com",
+    messagingSenderId: "361705732453",
+    appId: "1:361705732453:web:54b7c1113e687baa5a098c"
+  };
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
