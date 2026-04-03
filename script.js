@@ -1,68 +1,96 @@
+// =========================
+// 🔹 Firebase 認証対応 Signup
+// =========================
 document.addEventListener("DOMContentLoaded", () => {
   const signupBtn = document.getElementById("signupBtn");
   const sendPhoneCodeBtn = document.getElementById("sendPhoneCodeBtn");
 
-  let confirmationResult = null; // SMSコード確認用
+  const emailInput = document.getElementById("contactEmail");
+  const phoneInput = document.getElementById("contactPhone");
+  const phoneCodeInput = document.getElementById("phoneCode");
+  const usernameInput = document.getElementById("newUsername");
+  const passwordInput = document.getElementById("newPassword");
 
-  // 🔹 電話番号に確認コード送信
+  // Firebase Auth インスタンス
+  const auth = firebase.auth();
+
+  // ===== reCAPTCHA 初期化 =====
+  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+    size: 'invisible', // ページに見せない場合 'invisible'
+    callback: (response) => {
+      console.log("reCAPTCHA solved");
+    }
+  });
+
+  // ===== 電話番号確認コード送信 =====
   sendPhoneCodeBtn?.addEventListener("click", () => {
-    const phoneNumber = document.getElementById("contactPhone").value.trim();
-    if (!phoneNumber) {
+    const phone = phoneInput.value.trim();
+    if (!phone) {
       alert("電話番号を入力してください");
       return;
     }
 
-    // reCAPTCHA
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible'
-    });
-
-    firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
-      .then((result) => {
-        confirmationResult = result;
+    const appVerifier = window.recaptchaVerifier;
+    auth.signInWithPhoneNumber(phone, appVerifier)
+      .then(confirmationResult => {
+        window.confirmationResult = confirmationResult;
         alert("確認コードをSMSで送信しました");
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
-        alert("SMS送信エラー：" + error.message);
+        alert("SMS送信エラー: " + error.message);
       });
   });
 
-  // 🔹 登録ボタン
+  // ===== 登録ボタン =====
   signupBtn?.addEventListener("click", () => {
-    const email = document.getElementById("contactEmail").value.trim();
-    const phoneCode = document.getElementById("phoneCode").value.trim();
-    const username = document.getElementById("newUsername").value.trim();
-    const password = document.getElementById("newPassword").value.trim();
+    const email = emailInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const phoneCode = phoneCodeInput.value.trim();
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
 
-    if (!email || !username || !password || !phoneCode) {
-      alert("全ての項目を入力してください");
+    if (!username || !password) {
+      alert("ユーザーネームとパスワードは必須です");
       return;
     }
 
-    // SMS確認コード検証
-    confirmationResult.confirm(phoneCode)
-      .then((phoneUser) => {
-        // 電話番号認証成功
-        // 🔹 メールアドレスでの登録
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then((userCredential) => {
-            const user = userCredential.user;
-            user.updateProfile({ displayName: username });
-            user.sendEmailVerification()
-              .then(() => {
-                alert("登録完了！メールと電話番号の確認が完了しました。");
-                location.href = "../Login/";
-              });
-          })
-          .catch((error) => {
-            console.error(error);
-            alert("メール登録エラー：" + error.message);
-          });
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("電話番号確認コードが間違っています：" + error.message);
-      });
+    // メールで登録する場合
+    if (email) {
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          // メール認証送信
+          userCredential.user.sendEmailVerification()
+            .then(() => {
+              alert("登録完了！確認メールを送信しました。ログインしてください。");
+              window.location.href = "../Login/"; // ログインページに遷移
+            });
+        })
+        .catch(error => {
+          console.error(error);
+          alert("メール登録エラー: " + error.message);
+        });
+      return;
+    }
+
+    // 電話番号で登録する場合
+    if (phone) {
+      if (!phoneCode) {
+        alert("電話番号確認コードを入力してください");
+        return;
+      }
+      window.confirmationResult.confirm(phoneCode)
+        .then(result => {
+          alert("電話番号認証完了！ログインページに進みます。");
+          window.location.href = "../Login/";
+        })
+        .catch(error => {
+          console.error(error);
+          alert("確認コードが正しくありません: " + error.message);
+        });
+      return;
+    }
+
+    alert("メールアドレスまたは電話番号のどちらかを入力してください");
   });
 });
