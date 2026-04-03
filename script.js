@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     size: 'invisible'
   });
 
-  signupBtn?.addEventListener("click", () => {
+  signupBtn?.addEventListener("click", async () => {
     const contact = contactInput.value.trim();
     const password = passwordInput.value.trim();
     const passwordConfirm = passwordConfirmInput.value.trim();
@@ -26,44 +26,52 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // ----------------------------
     // メールアドレス登録
+    // ----------------------------
     if (contact.includes("@")) {
-  auth.createUserWithEmailAndPassword(contact, password)
-    .then(userCredential => {
-      const user = userCredential.user;
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(contact, password);
+        const user = userCredential.user;
 
-      // 🔥 これ追加
-      sessionStorage.setItem("verificationType", "email");
+        // Signup UIDを sessionStorage に保存
+        sessionStorage.setItem("signupUid", user.uid);
+        sessionStorage.setItem("verificationType", "email");
 
-      return user.sendEmailVerification();
-    })
-    .then(() => {
-      alert("登録完了！確認メールを送信しました。");
-      window.location.href = "/Verify/index.html";
-    })
-    .catch(error => {
-      console.error("エラー内容:", error);
-      alert("エラー: " + error.message);
-    });
-  return;
-}
+        // 🔥 サーバーへ確認コード生成＆送信依頼
+        await fetch('/send-verification-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: user.uid, email: contact })
+        });
 
+        alert("登録完了！確認コードをメールで送信しました。");
+        window.location.href = "/Verify/index.html";
+
+      } catch (error) {
+        console.error("エラー内容:", error);
+        alert("エラー: " + error.message);
+      }
+      return;
+    }
+
+    // ----------------------------
     // 電話番号登録
-    const appVerifier = window.recaptchaVerifier;
-    auth.signInWithPhoneNumber(contact, appVerifier)
-  .then(confirmationResult => {
-    window.confirmationResult = confirmationResult;
+    // ----------------------------
+    try {
+      const appVerifier = window.recaptchaVerifier;
+      const confirmationResult = await auth.signInWithPhoneNumber(contact, appVerifier);
+      window.confirmationResult = confirmationResult;
 
-    // 🔥 追加
-    sessionStorage.setItem("phoneNumber", contact);
-    sessionStorage.setItem("verificationType", "phone");
+      sessionStorage.setItem("phoneNumber", contact);
+      sessionStorage.setItem("verificationType", "phone");
 
-    alert("SMSで確認コードを送信しました。verifyページで入力してください。");
-    window.location.href = "/Verify/index.html";
-  })
-      .catch(error => {
-        console.error(error);
-        alert("電話番号登録エラー: " + error.message);
-      });
+      alert("SMSで確認コードを送信しました。verifyページで入力してください。");
+      window.location.href = "/Verify/index.html";
+
+    } catch (error) {
+      console.error("電話番号登録エラー:", error);
+      alert("電話番号登録エラー: " + error.message);
+    }
   });
 });
