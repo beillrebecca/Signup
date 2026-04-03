@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   signupBtn?.addEventListener("click", async () => {
+    alert("クリックイベント発火！"); // デバッグ用
+
     const contact = contactInput.value.trim();
     const password = passwordInput.value.trim();
     const passwordConfirm = passwordConfirmInput.value.trim();
@@ -26,9 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // ----------------------------
     // メールアドレス登録
-    // ----------------------------
     if (contact.includes("@")) {
       try {
         const userCredential = await auth.createUserWithEmailAndPassword(contact, password);
@@ -38,14 +38,12 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.setItem("signupUid", user.uid);
         sessionStorage.setItem("verificationType", "email");
 
-        // 🔥 サーバーへ確認コード生成＆送信依頼
-        await fetch('/send-verification-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ uid: user.uid, email: contact })
-        });
+        // 🔥 デバッグ用 alert
+        alert(`メール登録完了！UID: ${user.uid}`);
 
-        alert("登録完了！確認コードをメールで送信しました。");
+        // 本来はここでサーバーへ確認コード送信
+        // fetch('/send-verification-email', { ... })
+
         window.location.href = "/Verify/index.html";
 
       } catch (error) {
@@ -55,9 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // ----------------------------
     // 電話番号登録
-    // ----------------------------
     try {
       const appVerifier = window.recaptchaVerifier;
       const confirmationResult = await auth.signInWithPhoneNumber(contact, appVerifier);
